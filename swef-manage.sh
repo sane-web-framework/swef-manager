@@ -9,25 +9,37 @@ then
 else
     cd "$(dirname $0)"
 fi
-progDir="$(pwd)"
-cd "$returnDir"
-case "$1" in
-build)
-        errorCode=101
-        ;;
-instantiate)
-        errorCode=102
-        ;;
-*)
-        if [ "$1" = "" ]
-        then
-            echo "No option given" >> /dev/stderr
-        else
-            echo "Invalid option" >> /dev/stderr
-        fi
-        exit 100
-        ;;
-esac
-prog="$progDir/swef-$1.sh"
+prog="./swef-$1.sh"
+
+if [ ! "$1" ]
+then
+    cd "$returnDir"
+    echo "101 No option given" >> /dev/stderr
+    exit 101
+fi
+
+if [ "$1" = "manage" ]
+then
+    cd "$returnDir"
+    echo "102 Invalid option" >> /dev/stderr
+    exit 102
+fi
+
+if [ "$(echo "$1" | grep /)" ]
+then
+    cd "$returnDir"
+    echo "103 Invalid option" >> /dev/stderr
+    exit 103
+fi
+
+if [ ! -f "$prog" ]
+then
+    cd "$returnDir"
+    echo "104 Invalid option" >> /dev/stderr
+    exit 104
+fi
+
 shift
 "$prog" "$@"
+cd "$returnDir"
+

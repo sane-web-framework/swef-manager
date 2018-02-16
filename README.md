@@ -8,7 +8,7 @@ swef-manager is a component project of sane-web-framework (Swef).
 Getting started
 ---------------
 
-Deploy the appropriate OS user for your Swef projects and execute this:
+Deploy an appropriate OS user for your Swef projects and execute this:
 
 cd ~
 
