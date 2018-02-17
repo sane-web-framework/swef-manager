@@ -1,19 +1,26 @@
 
-
-# Swef GIT project bundle
-swef        swef-core                   git pull origin master
-swef        swef-vanilla                git pull origin master
-swef        swef-plugin-swefcontent     git pull origin master
-swef        swef-plugin-sweferror       git pull origin master
-swef        swef-plugin-sweflogin       git pull origin master
-swef        swef-plugin-swefregistrar   git pull origin master
-swef        swef-plugin-swefsecurity    git pull origin master
+# Swef standard bundle
+# ====================
+# Bundle        Package                         Command
+# ------        -------                         -------
+  swef          swef-core                       git pull origin master
+  swef          swef-vanilla                    git pull origin master
+  swef          swef-plugin-swefcontent         git pull origin master
+  swef          swef-plugin-sweferror           git pull origin master
+  swef          swef-plugin-sweflogin           git pull origin master
+  swef          swef-plugin-swefregistrar       git pull origin master
+  swef          swef-plugin-swefsecurity        git pull origin master
 
 # SWEF extras bundle
-extras      swef-noodles                git pull origin master
-extras      egvendor-egplugin           git pull origin master
-extras      cry-stall-my-tea            git pull origin master
+# ==================
+# Bundle        Package                         Command
+# ------        -------                         -------
+  extras        swef-noodles                    git pull origin master
+  extras        egvendor-plugin-egplugin        git pull origin master
+  extras        cry-stall-my-tea                git pull origin master
 
 # Custom bundle
-mybundle    my-project
-
+# =============
+# Bundle        Package                         Command
+# ------        -------                         -------
+  mybundle      my-project

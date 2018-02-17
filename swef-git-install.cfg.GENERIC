@@ -1,18 +1,25 @@
 
-
-# Swef GIT project bundle
-swef        swef-vanilla                git clone https://github.com/sane-web-framework/swef-vanilla.git
-swef        swef-plugin-swefcontent     git clone https://github.com/sane-web-framework/swef-plugin-swefcontent.git
-swef        swef-plugin-sweferror       git clone https://github.com/sane-web-framework/swef-plugin-sweferror.git
-swef        swef-plugin-sweflogin       git clone https://github.com/sane-web-framework/swef-plugin-sweflogin.git
-swef        swef-plugin-swefregistrar   git clone https://github.com/sane-web-framework/swef-plugin-swefregistrar.git
-swef        swef-plugin-swefsecurity    git clone https://github.com/sane-web-framework/swef-plugin-swefsecurity.git
+# Swef standard bundle
+# ====================
+# Bundle        Package                         Command
+# ------        -------                         -------
+  swef          swef-vanilla                    git clone https://github.com/sane-web-framework/swef-vanilla.git
+  swef          swef-plugin-swefcontent         git clone https://github.com/sane-web-framework/swef-plugin-swefcontent.git
+  swef          swef-plugin-sweferror           git clone https://github.com/sane-web-framework/swef-plugin-sweferror.git
+  swef          swef-plugin-sweflogin           git clone https://github.com/sane-web-framework/swef-plugin-sweflogin.git
+  swef          swef-plugin-swefregistrar       git clone https://github.com/sane-web-framework/swef-plugin-swefregistrar.git
+  swef          swef-plugin-swefsecurity        git clone https://github.com/sane-web-framework/swef-plugin-swefsecurity.git
 
 # SWEF extras bundle
-extras      swef-noodles                git clone https://github.com/sane-web-framework/swef-noodles.git
-extras      egvendor-plugin-egplugin    git clone https://github.com/sane-web-framework/egvendor-plugin-egplugin.git
-extras      cry-stall-my-tea            git clone https://github.com/insane-web-framework/cry-stall-my-tea.git
+# ==================
+# Bundle        Package                         Command
+# ------        -------                         -------
+  extras        swef-noodles                    git clone https://github.com/sane-web-framework/swef-noodles.git
+  extras        egvendor-plugin-egplugin        git clone https://github.com/sane-web-framework/egvendor-plugin-egplugin.git
+  extras        cry-stall-my-tea                git clone https://github.com/insane-web-framework/cry-stall-my-tea.git
 
 # Custom bundle
-mybundle    my-project
-
+# =============
+# Bundle        Package                         Command
+# ------        -------                         -------
+  mybundle      my-project

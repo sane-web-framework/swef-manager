@@ -11,7 +11,7 @@ function update_exit {
     # Return user to original working directory and exit with status code
     if [ "$1" != "0" ]
     then
-        echo "Error $1"
+        echo "Error $1" >> /dev/stderr
     fi
     cd "$returnDir"
     exit "$1"
@@ -194,7 +194,7 @@ function update_update {
 cd "$(dirname "$0")/.."
 if [ ! "$1" ]
 then
-    echo "Bundle/package not given:"
+    echo "Bundle/package not given - ./$(update_instance_dir)/.swef/swef-git-update.cfg:"
     cat ./$(update_instance_dir)/.swef/swef-git-update.cfg
     update_exit 101
 fi
