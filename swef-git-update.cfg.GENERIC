@@ -5,7 +5,7 @@ swef        swef-core                   git pull origin master
 swef        swef-vanilla                git pull origin master
 swef        swef-plugin-swefcontent     git pull origin master
 swef        swef-plugin-sweferror       git pull origin master
-swef        swef-plugin-sweflog         git pull origin master
+swef        swef-plugin-sweflogin       git pull origin master
 swef        swef-plugin-swefregistrar   git pull origin master
 swef        swef-plugin-swefsecurity    git pull origin master
 

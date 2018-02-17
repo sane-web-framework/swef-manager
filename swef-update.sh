@@ -3,7 +3,7 @@
 
 function update_error_msg {
     # Report an error message to both stdout and stderr
-    echo "$1" | tee /dev/stderr
+    echo "$1" >> /dev/stderr
 }
 
 
@@ -17,6 +17,90 @@ function update_exit {
     exit "$1"
 }
 returnDir="$(pwd)"
+
+
+function update_database {
+    if [ ! -d "./$1/.swef/sql" ]
+    then
+        return
+    fi
+    echo "Updating $1 SQL" 
+    update_pdo_check
+    ./swef-manager/swef-sqlup "$1" "$pdoDSN" "$pdoUsr" "$pdoPwd"
+}
+
+
+function update_find {
+    part="$1"
+    shift
+    if [ "$part" = "bundle" ]
+    then
+        echo $1
+        return
+    fi
+    shift
+    if [ "$part" = "package" ]
+    then
+        echo $1
+        return
+    fi
+    shift
+    if [ "$part" = "command" ]
+    then
+        echo $@
+        return
+    fi
+}
+
+
+function update_instance_dir {
+    ls -1 -d swef-instance-* | head -n 1
+}
+
+
+function update_package_in {
+    # Identify package
+    package="$(update_find package $@)"
+    cmd="$(update_find command $@)"
+    if [ ! "$cmd" ]
+    then
+        mkdir -p "$package"
+        return
+    fi
+    echo "$package: $cmd"
+    echo "--------"
+#    $cmd
+    echo "--------"
+    echo "... done"
+}
+
+
+function update_package_up {
+    # Identify package
+    package="$(update_find package $@)"
+    cmd="$(update_find command $@)"
+    # If missing, attempt to install
+    if [ ! -d ./$package ]
+    then
+        update_error_msg "Package not found: $package"
+        return
+    fi
+    # Database update
+    update_database $package
+    # No Git to do?
+    if [ ! "$cmd" ]
+    then
+        return
+    fi
+    # GIT update
+    cd ./$package
+    echo "$package: $cmd"
+    echo "--------"
+#    $cmd
+    echo "--------"
+    echo "... done"
+    cd ..
+}
 
 
 function update_pdo_check {
@@ -42,8 +126,9 @@ function update_pdo_check {
     echo -n "$pdoUsr" > "$instanceDir/.swef/swef-pdo.user"
     echo -n "Database admin password: "
     read -s pdoPwd
-    "$umbrellaDir/swef-manager/swef-pdocheck" "$pdoDSN" "$pdoUsr" "$pdoPwd"
+    ./swef-manager/swef-pdocheck "$pdoDSN" "$pdoUsr" "$pdoPwd"
     if [ $? != 0 ]
+    then
         echo -n "DSN or credentials were incorrect. Try again? [y/n] "
         read yn
         if [ "$yn" = "y" ]
@@ -58,115 +143,60 @@ pdoOK=""
 
 
 function update_install {
-    cd "$umbrellaDir"
-    proj="$1"
-    if [ "$1" = "swef-instance" ]
-    then
-        if [ "$(ls -1 -d swef-instance-* | head -n 1)" ]
+    while read -r line
+    do
+        if [ ! "$line" ]
         then
-            # Already installed
+            continue
+        fi
+        if [ "${line:0:1}" = "#" ]
+        then
+            continue
+        fi
+        if [ "$(update_find package $line)" = "$1" ]
+        then
+            echo update_package_in $line
             return
         fi
-        proj="$umbrellaDir/swef-instance-$HOSTNAME-$USER"
-        mkdir -p "$proj/.swef"
-        cp "$umbrellaDir/swef-manager/swef-git-install.cfg.GENERIC" "$proj/.swef/swef-git-install.cfg"
-        cp "$umbrellaDir/swef-manager/swef-git-update.cfg.GENERIC" "$proj/.swef/swef-git-update.cfg"
-    else
-        if [ -d "$umbrellaDir/$proj" ]
+        if [ "$(update_find bundle $line)" != "$1" ]
         then
-            # Already installed
-            return
+            continue
         fi
-        mkdir -p "$umbrellaDir/$proj"
-    fi
-    if [ ! "$2" ]
-    then
-        return
-    fi
-    cd "$umbrellaDir/$1"
-    echo "Installing $1 file system using $instanceDir/.swef/$1/git-install.sh ..."
-    echo "--------"
-    echo $@
-    echo "--------"
-    echo "... done"
+        update_package_in $line
+    done < "./$(update_instance_dir)/.swef/swef-git-install.cfg"
 }
-
 
 function update_update {
-    echo "Updating \"$1\" SQL"
-    # Update database
-    if [ -d "$umbrellaDir/$1/.swef/sql" ]
-    then
-        update_pdo_check
-        "$umbrellaDir/swef-manager/swef-sqlup" "$1" "$pdoDSN" "$pdoUsr" "$pdoPwd"
-    fi
-    # If missing, attempt to install
-    if [ ! -d "$umbrellaDir/$1" ]
-    then
-        update_install "$1"
-    fi
-    # Not a Git repository?
-    if [ ! -d $umbrellaDir/$1/.git ]
-    then
-        return
-    fi
-    # GIT update
-    if [ ! -f "$instanceDir/.swef/$1/git-update.sh" ]
-    then
-        return
-    fi
-    cd "$umbrellaDir/$1"
-    echo "Updating $1 file system using $instanceDir/.swef/$1/git-update.sh ..."
-    echo "--------"
-    source "$instanceDir/.swef/$1/git-update.sh"
-    echo "--------"
-    echo "... done"
+    while read -r line
+    do
+        if [ ! "$line" ]
+        then
+            continue
+        fi
+        if [ "${line:0:1}" = "#" ]
+        then
+            continue
+        fi
+        if [ "$(update_find package $line)" = "$1" ]
+        then
+            echo update_package $line
+            return
+        fi
+        if [ "$(update_find bundle $line)" != "$1" ]
+        then
+            continue
+        fi
+        update_package_up $line
+    done < "./$(update_instance_dir)/.swef/swef-git-update.cfg"
 }
 
-
-# Get directory containing projects
-cd "$(dirname "$0")/.."
-$umbrellaDir="$(pwd)"
-
-
-# Ensure that swef-instance and swef-core are installed
-if [ ! -d "$umbrellaDir/swef-core" ]
-    update_install swef-instance        git clone https://github.com/sane-web-framework/swef-instance.git
-    update_install swef-core            git clone https://github.com/sane-web-framework/swef-core.git
-fi
-
-
-# Enforce project name
+# Update requested package(s)
 if [ ! "$1" ]
 then
-    echo "Project name not given \"$1\""
-    update_exit 102
+    echo "Package/bundle not given \"$1\""
+    update_exit 101
 fi
-
-
-# Check for "bundles"
-case "$1" in
-    "swef")
-        update_update swef-core
-        update_update swef-vanilla clone
-        update_update swef-plugin-swefcontent clone
-        update_update swef-plugin-sweferror clone
-        update_update swef-plugin-sweflog clone
-        update_update swef-plugin-swefregistrar clone
-        update_update swef-plugin-swefsecurity clone
-        ;;
-    "custom")
-        update_update swef-noodles
-        update_update 
-        update_update swef-plugin-swefcontent clone
-        update_update swef-plugin-sweferror clone
-        update_update swef-plugin-sweflog clone
-        update_update swef-plugin-swefregistrar clone
-        update_update swef-plugin-swefsecurity clone
-        ;;
-    *)
-        update_update "$1"
-        ;;
-esac
-
-
+cd "$(dirname "$0")/.."
+update_install $1
+update_update $1
+update_exit 0

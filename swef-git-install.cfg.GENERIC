@@ -4,7 +4,7 @@
 swef        swef-vanilla                git clone https://github.com/sane-web-framework/swef-vanilla.git
 swef        swef-plugin-swefcontent     git clone https://github.com/sane-web-framework/swef-swefcontent.git
 swef        swef-plugin-sweferror       git clone https://github.com/sane-web-framework/swef-sweferror.git
-swef        swef-plugin-sweflog         git clone https://github.com/sane-web-framework/swef-sweflog.git
+swef        swef-plugin-sweflogin       git clone https://github.com/sane-web-framework/swef-sweflogin.git
 swef        swef-plugin-swefregistrar   git clone https://github.com/sane-web-framework/swef-registrar.git
 swef        swef-plugin-swefsecurity    git clone https://github.com/sane-web-framework/swef-security.git
 
