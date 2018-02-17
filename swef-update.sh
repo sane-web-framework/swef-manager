@@ -187,16 +187,17 @@ function update_update {
             continue
         fi
         update_package_up $line
-    done < "./$(update_instance_dir)/.swef/swef-git-update.cfg"
+    done < ./$(update_instance_dir)/.swef/swef-git-update.cfg
 }
 
 # Update requested package(s)
+cd "$(dirname "$0")/.."
 if [ ! "$1" ]
 then
-    echo "Package/bundle not given"
+    echo "Bundle/package not given:"
+    cat ./$(update_instance_dir)/.swef/swef-git-update.cfg
     update_exit 101
 fi
-cd "$(dirname "$0")/.."
 update_install $1
 update_update $1
 update_exit 0
