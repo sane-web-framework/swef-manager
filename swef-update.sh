@@ -155,7 +155,7 @@ function update_install {
         fi
         if [ "$(update_find package $line)" = "$1" ]
         then
-            echo update_package_in $line
+            update_package_in $line
             return
         fi
         if [ "$(update_find bundle $line)" != "$1" ]
