@@ -69,7 +69,7 @@ function update_package_in {
     fi
     echo "$package: $cmd"
     echo "--------"
-#    $cmd
+    $cmd
     echo "--------"
     echo "... done"
 }
@@ -96,7 +96,7 @@ function update_package_up {
     cd ./$package
     echo "$package: $cmd"
     echo "--------"
-#    $cmd
+    $cmd
     echo "--------"
     echo "... done"
     cd ..
@@ -193,7 +193,7 @@ function update_update {
 # Update requested package(s)
 if [ ! "$1" ]
 then
-    echo "Package/bundle not given \"$1\""
+    echo "Package/bundle not given"
     update_exit 101
 fi
 cd "$(dirname "$0")/.."
