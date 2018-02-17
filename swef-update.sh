@@ -179,7 +179,7 @@ function update_update {
         fi
         if [ "$(update_find package $line)" = "$1" ]
         then
-            echo update_package $line
+            update_package_up $line
             return
         fi
         if [ "$(update_find bundle $line)" != "$1" ]
