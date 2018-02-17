@@ -58,23 +58,35 @@ pdoOK=""
 
 
 function update_install {
-    # Not a Git repository?
-    if [ -f "$umbrellaDir/$1/.swef/git-install.sh.GENERIC" ]
+    cd "$umbrellaDir"
+    proj="$1"
+    if [ "$1" = "swef-instance" ]
     then
-        echo "$umbrellaDir/$1/.swef/git-install.sh.GENERIC was not found - not installing" >> /dev/stderr
+        if [ "$(ls -1 -d swef-instance-* | head -n 1)" ]
+        then
+            # Already installed
+            return
+        fi
+        proj="$umbrellaDir/swef-instance-$HOSTNAME-$USER"
+        mkdir -p "$proj/.swef"
+        cp "$umbrellaDir/swef-manager/swef-git-install.cfg.GENERIC" "$proj/.swef/swef-git-install.cfg"
+        cp "$umbrellaDir/swef-manager/swef-git-update.cfg.GENERIC" "$proj/.swef/swef-git-update.cfg"
+    else
+        if [ -d "$umbrellaDir/$proj" ]
+        then
+            # Already installed
+            return
+        fi
+        mkdir -p "$umbrellaDir/$proj"
+    fi
+    if [ ! "$2" ]
+    then
         return
     fi
-    if [ ! -f "$instanceDir/.swef/$1/git-install.sh" ]
-    then
-        mkdir -p "$instanceDir/.swef/$1"
-        cp -p "$umbrellaDir/$1/.swef/git-install.sh.GENERIC" "$instanceDir/.swef/$1/git-install.sh"
-    fi
-    # Git install
-    mkdir "$umbrellaDir/$1"
     cd "$umbrellaDir/$1"
     echo "Installing $1 file system using $instanceDir/.swef/$1/git-install.sh ..."
     echo "--------"
-    "$instanceDir/.swef/$1/git-install.sh"
+    echo $@
     echo "--------"
     echo "... done"
 }
@@ -98,22 +110,15 @@ function update_update {
     then
         return
     fi
-    # GIT update script
-    if [ ! -f "$umbrellaDir/$1/.swef/git-update.sh.GENERIC" ]
-    then
-        echo "$umbrellaDir/$1/.swef/git-update.sh.GENERIC was not found - aborting" >> /dev/stderr
-        update_exit 105
-    fi
+    # GIT update
     if [ ! -f "$instanceDir/.swef/$1/git-update.sh" ]
     then
-        mkdir -p "$instanceDir/.swef/$1"
-        cp -p "$umbrellaDir/$1/.swef/git-update.sh.GENERIC" "$instanceDir/.swef/$1/git-update.sh"
+        return
     fi
-    # Git update
     cd "$umbrellaDir/$1"
     echo "Updating $1 file system using $instanceDir/.swef/$1/git-update.sh ..."
     echo "--------"
-    "$instanceDir/.swef/$1/git-update.sh"
+    source "$instanceDir/.swef/$1/git-update.sh"
     echo "--------"
     echo "... done"
 }
@@ -124,9 +129,10 @@ cd "$(dirname "$0")/.."
 $umbrellaDir="$(pwd)"
 
 
-# Ensure that swef-core is installed
+# Ensure that swef-instance and swef-core are installed
 if [ ! -d "$umbrellaDir/swef-core" ]
-    update_install swef-core
+    update_install swef-instance        git clone https://github.com/sane-web-framework/swef-instance.git
+    update_install swef-core            git clone https://github.com/sane-web-framework/swef-core.git
 fi
 
 
@@ -140,15 +146,23 @@ fi
 
 # Check for "bundles"
 case "$1" in
-    "typical")
-        update_update "swef-core"
-        update_update "swef-vanilla"
-        update_update "swef-plugin-swefcontent"
-        update_update "swef-plugin-sweferror"
-        update_update "swef-plugin-sweflog"
-        update_update "swef-plugin-swefregistrar"
-        update_update "swef-plugin-swefsecurity"
-        update_update "swef-instance-$HOSTNAME-$USER"
+    "swef")
+        update_update swef-core
+        update_update swef-vanilla clone
+        update_update swef-plugin-swefcontent clone
+        update_update swef-plugin-sweferror clone
+        update_update swef-plugin-sweflog clone
+        update_update swef-plugin-swefregistrar clone
+        update_update swef-plugin-swefsecurity clone
+        ;;
+    "custom")
+        update_update swef-noodles
+        update_update 
+        update_update swef-plugin-swefcontent clone
+        update_update swef-plugin-sweferror clone
+        update_update swef-plugin-sweflog clone
+        update_update swef-plugin-swefregistrar clone
+        update_update swef-plugin-swefsecurity clone
         ;;
     *)
         update_update "$1"
