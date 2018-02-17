@@ -5,8 +5,8 @@ swef        swef-vanilla                git clone https://github.com/sane-web-fr
 swef        swef-plugin-swefcontent     git clone https://github.com/sane-web-framework/swef-plugin-swefcontent.git
 swef        swef-plugin-sweferror       git clone https://github.com/sane-web-framework/swef-plugin-sweferror.git
 swef        swef-plugin-sweflogin       git clone https://github.com/sane-web-framework/swef-plugin-sweflogin.git
-swef        swef-plugin-swefregistrar   git clone https://github.com/sane-web-framework/swef-plugin-registrar.git
-swef        swef-plugin-swefsecurity    git clone https://github.com/sane-web-framework/swef-plugin-security.git
+swef        swef-plugin-swefregistrar   git clone https://github.com/sane-web-framework/swef-plugin-swefregistrar.git
+swef        swef-plugin-swefsecurity    git clone https://github.com/sane-web-framework/swef-plugin-swefsecurity.git
 
 # SWEF extras bundle
 extras      swef-noodles                git clone https://github.com/sane-web-framework/swef-noodles.git
