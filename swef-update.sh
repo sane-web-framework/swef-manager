@@ -59,14 +59,21 @@ function update_instance_dir {
 
 
 function update_package_in {
-    # Identify package
+    # Identify uninstalled package
     package="$(update_find package $@)"
+    if [ -d "$package" ]
+    then
+        echo "$package: already installed"
+        return
+    fi
+    # Identify install command
     cmd="$(update_find command $@)"
     if [ ! "$cmd" ]
     then
         mkdir -p "$package"
         return
     fi
+    # Run install command
     echo "$package: $cmd"
     echo "--------"
     $cmd
@@ -78,21 +85,20 @@ function update_package_in {
 function update_package_up {
     # Identify package
     package="$(update_find package $@)"
-    cmd="$(update_find command $@)"
-    # If missing, attempt to install
     if [ ! -d ./$package ]
     then
-        update_error_msg "Package not found: $package"
+        update_error_msg "Unexpected error: supposedly installed package not found: $package"
         return
     fi
     # Database update
     update_database $package
-    # No Git to do?
+    # Identify update commmand
+    cmd="$(update_find command $@)"
     if [ ! "$cmd" ]
     then
         return
     fi
-    # GIT update
+    # Run update command
     cd ./$package
     echo "$package: $cmd"
     echo "--------"
