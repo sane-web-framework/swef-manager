@@ -24,7 +24,7 @@ function update_database {
     then
         return
     fi
-    echo "Updating $1 SQL" 
+    echo "Updating $1 SQL"
     update_pdo_check
     ./swef-manager/swef-sqlup "$1" "$pdoDSN" "$pdoUsr" "$pdoPwd"
 }
@@ -206,7 +206,7 @@ then
 fi
 update_install $1
 update_update $1
-echo "Updated in compliance with this configuration:"
+echo "Updated $1 in compliance with this configuration:"
 echo "./$(update_instance_dir)/.swef/swef-git-install.cfg"
 echo "./$(update_instance_dir)/.swef/swef-git-update.cfg"
 update_exit 0
