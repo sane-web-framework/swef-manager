@@ -11,7 +11,7 @@ function update_exit {
     # Return user to original working directory and exit with status code
     if [ "$1" != "0" ]
     then
-        echo "Error $1" >> /dev/stderr
+        update_error_msg "Error $1"
     fi
     cd "$returnDir"
     exit "$1"
@@ -88,7 +88,7 @@ function update_package_up {
     if [ ! -d ./$package ]
     then
         update_error_msg "Unexpected error: supposedly installed package not found: $package"
-        return
+        update_exit 102
     fi
     # Database update
     update_database $package
@@ -206,4 +206,7 @@ then
 fi
 update_install $1
 update_update $1
+echo "Updated in compliance this configuration:"
+echo "./$(update_instance_dir)/.swef/swef-git-install.cfg"
+echo "./$(update_instance_dir)/.swef/swef-git-update.cfg"
 update_exit 0
