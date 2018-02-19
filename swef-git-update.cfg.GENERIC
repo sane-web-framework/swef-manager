@@ -3,6 +3,7 @@
 # ====================
 # Bundle        Package                         Command
 # ------        -------                         -------
+  swef          swef-manager                    git pull origin master
   swef          swef-core                       git pull origin master
   swef          swef-vanilla                    git pull origin master
   swef          swef-plugin-swefcontent         git pull origin master
@@ -18,6 +19,12 @@
   extras        swef-noodles                    git pull origin master
   extras        egvendor-plugin-egplugin        git pull origin master
   extras        cry-stall-my-tea                git pull origin master
+
+# Swef SwefCMS bundle
+# ===================
+# Bundle        Package                         Command
+# ------        -------                         -------
+  swefcms       swef-plugin-swefcms             git pull origin master
 
 # Custom bundle
 # =============

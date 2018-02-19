@@ -10,7 +10,7 @@
   swef          swef-plugin-swefregistrar       git clone https://github.com/sane-web-framework/swef-plugin-swefregistrar.git
   swef          swef-plugin-swefsecurity        git clone https://github.com/sane-web-framework/swef-plugin-swefsecurity.git
 
-# SWEF extras bundle
+# Swef extras bundle
 # ==================
 # Bundle        Package                         Command
 # ------        -------                         -------
@@ -18,8 +18,15 @@
   extras        egvendor-plugin-egplugin        git clone https://github.com/sane-web-framework/egvendor-plugin-egplugin.git
   extras        cry-stall-my-tea                git clone https://github.com/insane-web-framework/cry-stall-my-tea.git
 
+# Swef SwefCMS bundle
+# ===================
+# Bundle        Package                         Command
+# ------        -------                         -------
+  swefcms       swef-plugin-swefcms             git clone https://github.com/sane-web-framework/swef-plugin-swefcms.git
+
 # Custom bundle
 # =============
 # Bundle        Package                         Command
 # ------        -------                         -------
   mybundle      my-project
+
