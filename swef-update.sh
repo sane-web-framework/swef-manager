@@ -206,7 +206,7 @@ then
 fi
 update_install $1
 update_update $1
-echo "Updated in compliance this configuration:"
+echo "Updated in compliance with this configuration:"
 echo "./$(update_instance_dir)/.swef/swef-git-install.cfg"
 echo "./$(update_instance_dir)/.swef/swef-git-update.cfg"
 update_exit 0
