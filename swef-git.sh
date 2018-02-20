@@ -23,6 +23,13 @@ returnDir="$(pwd)"
 
 
 
+if [ "$1" != "status" ]
+then
+    git_error_msg "./swef git status"
+    git_exit 101
+fi
+
+
 # Identify directories
 cd "$(dirname "$0")/.."
 umbrellaDir="$(pwd)"
@@ -73,7 +80,7 @@ do
         fi
 
         # Show git status
-        echo "$umbrellaDir/$dir: git status:"
+        echo "$umbrellaDir/$dir: git status"
         cd "$umbrellaDir/$dir"
         echo "--------"
         git status
