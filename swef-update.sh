@@ -111,17 +111,17 @@ function update_package_up {
         return
     fi
     cd "./$package"
-    for file in $(find "./app/config" -iname *.EXAMPLE | grep -v .git* | grep -v .swef*)
+    for file in $(find ./app/config -iname *.EXAMPLE | grep -v /\.git | grep -v /\.swef)
     do
-        # Create directory path and config file (if missing)
-        mkdir -p "$instanceDir/$(dirname "$file")"
-        if [ -f "$instanceDir/${file::-8}" ]
+        if [ -f "$(pwd)/../$instanceDir/${file::-8}" ]
         then
             continue
         fi
-        echo "Copying $(pwd)/$file to $instanceDir/${file::-8}"
-        echo cp "$file" "$instanceDir/${file::-8}"
-    done
+        echo "Making $instanceDir/$(dirname "$file")"
+        mkdir -p "$(pwd)/../$instanceDir/$(dirname "$file")"
+        echo "Instantiating $file into $instanceDir/.../$(basename "${file::-8}")"
+        cp "$(pwd)/$file" "$(pwd)/../$instanceDir/${file::-8}"
+   done
     cd ..
 }
 
@@ -221,7 +221,7 @@ then
     cat ./$instanceDir/.swef/swef-git-update.cfg
     update_exit 101
 fi
-$instanceDir = $(update_instance_dir)
+instanceDir="$(update_instance_dir)"
 update_install $1
 update_update $1
 echo "Updated package \"$1\" in compliance with this configuration:"
