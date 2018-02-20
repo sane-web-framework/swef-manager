@@ -94,17 +94,34 @@ function update_package_up {
     update_database $package
     # Identify update commmand
     cmd="$(update_find command $@)"
-    if [ ! "$cmd" ]
+    if [ "$cmd" ]
+        then
+        # Run update command
+        cd ./$package
+        echo "$package: $cmd"
+        echo "--------"
+        $cmd
+        echo "--------"
+        echo "... done"
+        cd ..
+    fi
+    # Instantiate configuration examples
+    if [ ! -d "./$package/app/config" ]
     then
         return
     fi
-    # Run update command
-    cd ./$package
-    echo "$package: $cmd"
-    echo "--------"
-    $cmd
-    echo "--------"
-    echo "... done"
+    cd "./$package"
+    for file in $(find "./app/config" -iname *.EXAMPLE | grep -v .git* | grep -v .swef*)
+    do
+        # Create directory path and config file (if missing)
+        mkdir -p "$instanceDir/$(dirname "$file")"
+        if [ -f "$instanceDir/${file::-8}" ]
+        then
+            continue
+        fi
+        echo "Copying $(pwd)/$file to $instanceDir/${file::-8}"
+        echo cp "$file" "$instanceDir/${file::-8}"
+    done
     cd ..
 }
 
@@ -169,7 +186,7 @@ function update_install {
             continue
         fi
         update_package_in $line
-    done < "./$(update_instance_dir)/.swef/swef-git-install.cfg"
+    done < "./$instanceDir/.swef/swef-git-install.cfg"
 }
 
 function update_update {
@@ -193,20 +210,21 @@ function update_update {
             continue
         fi
         update_package_up $line
-    done < ./$(update_instance_dir)/.swef/swef-git-update.cfg
+    done < ./$instanceDir/.swef/swef-git-update.cfg
 }
 
 # Update requested package(s)
 cd "$(dirname "$0")/.."
 if [ ! "$1" ]
 then
-    echo "Bundle/package not given - ./$(update_instance_dir)/.swef/swef-git-update.cfg:"
-    cat ./$(update_instance_dir)/.swef/swef-git-update.cfg
+    echo "Bundle/package not given - ./$instanceDir/.swef/swef-git-update.cfg:"
+    cat ./$instanceDir/.swef/swef-git-update.cfg
     update_exit 101
 fi
+$instanceDir = $(update_instance_dir)
 update_install $1
 update_update $1
 echo "Updated package \"$1\" in compliance with this configuration:"
-echo "./$(update_instance_dir)/.swef/swef-git-install.cfg"
-echo "./$(update_instance_dir)/.swef/swef-git-update.cfg"
+echo "./$instanceDir/.swef/swef-git-install.cfg"
+echo "./$instanceDir/.swef/swef-git-update.cfg"
 update_exit 0
