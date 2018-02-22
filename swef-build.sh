@@ -25,7 +25,8 @@ returnDir="$(pwd)"
 
 function build_find_paths {
     # Recursively identify symbolic links within a directory
-    path="$1"
+    local item=""
+    local path="$1"
     if [ ! -d "$path" ]
     then
         # This path is a file target
@@ -38,44 +39,53 @@ function build_find_paths {
         echo "$path"
         return
     fi
-    for item in $(ls -1 -d "$path"/*)
+    for item in $(ls -1a "$path")
     do
-        build_find_paths "$item"
+        if [ "$item" = "." ] || [ "$item" = ".." ]
+        then
+            continue
+        fi
+        if [ "$(echo $item | grep ^\.swef)" ] || [ "$(echo $item | grep \.git)" ]
+        then
+            continue
+        fi
+        build_find_paths "$path/$item"
     done
 }
 
 
 
-# Check for target directory argument
-if [ ! $1 ]
-then
-    echo "SWEF directory path must be given"
-    build_exit 102
-fi
-
-
-
-# Create target directory (must not exist)
-find "$1" > /dev/null 2>&1
-if [ "$?" = "0" ]
-then
-    echo "Path already exists: $1"
-    build_exit 103
-fi
-mkdir "$1"
-
-
-
 # Identify directories and log file
-cd "$1"
+if [ "$1" ]
+then
+    if [ ! -d "$1" ]
+    then
+        build_error_msg "$1 is not a directory"
+        build_exit 101
+    fi
+    cd "$1"
+else
+    cd "$(dirname "$0")/../swef-www"
+fi
 targetDir="$(pwd)"
 cd "$returnDir"
-cd "$(dirname "$0")"
-cd ..
-projectsDir="$(pwd)"
-tmpFile="$projectsDir/.swef-build.tmp"
+echo -n "Sure you want to delete and rebuild $(pwd)? [y/n] "
+read -n1 -s choose
+echo ""
+if [ "$choose" != "y" ]
+then
+    echo "Aborted on user request"
+    build_exit 0
+fi
+rm -rf "$targetDir"
+mkdir "$targetDir"
+cd "$(dirname "$0")/.."
+umbrellaDir="$(pwd)"
+tmpFile="$umbrellaDir/.swef-build.tmp"
 manifest="$targetDir/.swef-manifest"
 echo "# Build manifest @ time=$(date '+%Y%m%d%H%M%S')" > "$manifest"
+echo "REBUILDING SYMLINKS IN $targetDir POINTING AT:"
+
 
 
 # Loop through project types
@@ -83,24 +93,24 @@ for projectType in swefland vendorland userland
 do
 
     # Loop through projects
-    cd "$projectsDir"
+    cd "$umbrellaDir"
     for dir in $(ls -1 -d *)
     do
 
         # Ignore paths that are not directories
-        if [ ! -d "$projectsDir/$dir" ]
+        if [ ! -d "$umbrellaDir/$dir" ]
         then
              continue
         fi
 
         # Ignore project if current loop is swefland and project is not
-        if [ "$projectType" = "swefland" ] && [ ! -f  "$projectsDir/$dir/.swef-type-swef" ]
+        if [ "$projectType" = "swefland" ] && [ ! -f  "$umbrellaDir/$dir/.swef-type-swef" ]
         then
              continue
         fi
 
         # Ignore project if current loop is vendorland and project is not
-        if [ "$projectType" = "vendorland" ] && [ ! -f  "$projectsDir/$dir/.swef-type-vendor" ]
+        if [ "$projectType" = "vendorland" ] && [ ! -f  "$umbrellaDir/$dir/.swef-type-vendor" ]
         then
              continue
         fi
@@ -108,33 +118,39 @@ do
         # Ignore project if current loop is userland and project is not
         if [ "$projectType" = "userland" ]
         then
-            if [ -f "$projectsDir/$dir/.swef-type-swef" ] || [ -f  "$projectsDir/$dir/.swef-type-vendor" ]
+            if [ -f "$umbrellaDir/$dir/.swef-type-swef" ] || [ -f  "$umbrellaDir/$dir/.swef-type-vendor" ]
             then
                 continue
             fi
         fi
 
         # Ignore project if no .swef-build file
-        if [ ! -f "$projectsDir/$dir/.swef-build" ]
+        if [ ! -f "$umbrellaDir/$dir/.swef-build" ]
         then
-            echo "# Ignored $projectsDir/$dir ($projectsDir/$dir/.swef-build not a file)" >> "$manifest"
-            echo "Ignoring $projectsDir/$dir"
+            echo "# Ignored $umbrellaDir/$dir ($umbrellaDir/$dir/.swef-build not a file)" >> "$manifest"
+            echo "Ignoring $umbrellaDir/$dir"
             continue
         fi
 
         # Build directories and links
-        cd "$projectsDir/$dir"
+        cd "$umbrellaDir/$dir"
+        echo "--------"
+        pwd
+        echo "--------"
+        echo -n "" > "$tmpFile"
         build_find_paths . >> "$tmpFile"
         cd "$targetDir"
         for linkedPath in $(cat "$tmpFile")
         do
+            echo $linkedPath
             mkdir -p "$targetDir/$(dirname "$linkedPath")"
             rm -f "$targetDir/$linkedPath"
-            ln -s "$projectsDir/$dir/$linkedPath" "$targetDir/$linkedPath"
-            chm="$(ls -l -d "$projectsDir/$dir/$linkedPath" | awk '{print $1}')"
-            printf "%-50s %-2s %-10s %-1s\n" "$linkedPath" "->" "$chm" "..../$dir/$linkedPath" >> "$manifest"
+            ln -s "$umbrellaDir/$dir/$linkedPath" "$targetDir/$linkedPath"
+            chm="$(ls -l -d "$umbrellaDir/$dir/$linkedPath" | awk '{print $1}')"
+            printf "%-50s %-2s %-10s %-1s\n" "$linkedPath" "->" "$chm" "$dir/$linkedPath" >> "$manifest"
         done
-
+        # For readability
+        sleep 1
     done
 
 done
