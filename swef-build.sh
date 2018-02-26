@@ -89,7 +89,7 @@ echo "REBUILDING SYMLINKS IN $targetDir POINTING AT:"
 
 
 # Loop through project types
-for projectType in swefland vendorland userland
+for projectType in instanceland swefland vendorland userland
 do
 
     # Loop through projects
@@ -99,6 +99,12 @@ do
 
         # Ignore paths that are not directories
         if [ ! -d "$umbrellaDir/$dir" ]
+        then
+             continue
+        fi
+
+        # Ignore project if current loop is instanceland and project is not
+        if [ "$projectType" = "instanceland" ] && [ ! -f  "$umbrellaDir/$dir/.swef-type-instance" ]
         then
              continue
         fi
@@ -149,6 +155,7 @@ do
             chm="$(ls -l -d "$umbrellaDir/$dir/$linkedPath" | awk '{print $1}')"
             printf "%-50s %-2s %-10s %-1s\n" "$linkedPath" "->" "$chm" "$dir/$linkedPath" >> "$manifest"
         done
+        rm "$tmpFile"
         # For readability
         sleep 1
     done
@@ -157,8 +164,7 @@ done
 
 
 
-# Delete temporary file, display the manifest and exit
-rm -f "$tmpFile"
+# Display the manifest and exit
 echo -n "Manifest is in $manifest. View with less now? [y/n] "
 read -n1 -s choose
 echo ""
