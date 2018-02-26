@@ -83,7 +83,7 @@ cd "$(dirname "$0")/.."
 umbrellaDir="$(pwd)"
 tmpFile="$umbrellaDir/.swef-build.tmp"
 manifest="$targetDir/.swef-manifest"
-echo "# Build manifest @ time=$(date '+%Y%m%d%H%M%S')" > "$manifest"
+echo "# BUILD MANIFEST @ time=$(date '+%Y%m%d%H%M%S')" > "$manifest"
 echo "REBUILDING SYMLINKS IN $targetDir POINTING AT:"
 
 
@@ -101,6 +101,14 @@ do
         if [ ! -d "$umbrellaDir/$dir" ]
         then
              continue
+        fi
+
+        # Ignore project if no .swef-build file
+        if [ ! -f "$umbrellaDir/$dir/.swef-build" ]
+        then
+            echo "# Ignored $umbrellaDir/$dir ($umbrellaDir/$dir/.swef-build not a file)" >> "$manifest"
+            echo "Ignoring $umbrellaDir/$dir"
+            continue
         fi
 
         # Ignore project if current loop is instanceland and project is not
@@ -124,18 +132,18 @@ do
         # Ignore project if current loop is userland and project is not
         if [ "$projectType" = "userland" ]
         then
-            if [ -f "$umbrellaDir/$dir/.swef-type-swef" ] || [ -f  "$umbrellaDir/$dir/.swef-type-vendor" ]
+            if [ -f "$umbrellaDir/$dir/.swef-type-instance" ]
             then
                 continue
             fi
-        fi
-
-        # Ignore project if no .swef-build file
-        if [ ! -f "$umbrellaDir/$dir/.swef-build" ]
-        then
-            echo "# Ignored $umbrellaDir/$dir ($umbrellaDir/$dir/.swef-build not a file)" >> "$manifest"
-            echo "Ignoring $umbrellaDir/$dir"
-            continue
+            if [ -f "$umbrellaDir/$dir/.swef-type-swef" ]
+            then
+                continue
+            fi
+            if [ -f  "$umbrellaDir/$dir/.swef-type-vendor" ]
+            then
+                continue
+            fi
         fi
 
         # Build directories and links
@@ -143,6 +151,8 @@ do
         echo "--------"
         pwd
         echo "--------"
+        echo "# $umbrellaDir/$dir" >> "$manifest"
+        echo "# --------" >> "$manifest"
         echo -n "" > "$tmpFile"
         build_find_paths . >> "$tmpFile"
         cd "$targetDir"
@@ -156,6 +166,7 @@ do
             printf "%-50s %-2s %-10s %-1s\n" "$linkedPath" "->" "$chm" "$dir/$linkedPath" >> "$manifest"
         done
         rm "$tmpFile"
+        echo "# --------" >> "$manifest"
         # For readability
         sleep 1
     done
