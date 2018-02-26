@@ -72,6 +72,8 @@ do
             fi
         fi
 
+        echo "--------"
+
         # Ignore project if no .git directory
         if [ ! -d "$umbrellaDir/$dir/.git" ]
         then
@@ -82,10 +84,11 @@ do
         # Show git status
         cd "$umbrellaDir/$dir"
         check="$(git status | grep "nothing to commit, working directory clean")"
-        if [ ! "$check" ]
+        if [ "$check" ]
         then
-            echo "--------"
-            echo "Git status for $dir:"
+            echo "$dir - nothing to commit, working directory clean"
+        else
+            echo "$dir - git status:"
             git status
         fi
     done
