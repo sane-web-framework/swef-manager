@@ -224,7 +224,7 @@ fi
 instanceDir="$(update_instance_dir)"
 update_install $1
 update_update $1
-echo "Updated package \"$1\" in compliance with this configuration:"
+echo "Updated \"$1\" in compliance with this configuration:"
 echo "./$instanceDir/.swef/swef-git-install.cfg"
 echo "./$instanceDir/.swef/swef-git-update.cfg"
 update_exit 0
