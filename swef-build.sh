@@ -69,7 +69,7 @@ else
 fi
 targetDir="$(pwd)"
 cd "$returnDir"
-echo -n "Sure you want to delete and rebuild $(pwd)? [y/n] "
+echo -n "Sure you want to delete and rebuild $targetDir? [y/n] "
 read -n1 -s choose
 echo ""
 if [ "$choose" != "y" ]
