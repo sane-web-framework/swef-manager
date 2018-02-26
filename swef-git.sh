@@ -80,11 +80,14 @@ do
         fi
 
         # Show git status
-        echo "$umbrellaDir/$dir: git status"
         cd "$umbrellaDir/$dir"
-        echo "--------"
-        git status
-        echo "--------"
+        check="$(git status | grep "nothing to commit, working directory clean")"
+        if [ ! "$check" ]
+        then
+            echo "--------"
+            echo "Git status for $dir:"
+            git status
+        fi
     done
 
 done
