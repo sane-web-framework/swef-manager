@@ -24,6 +24,12 @@
 # ------        -------                         -------
   swefcms       swef-plugin-swefcms             git clone https://github.com/sane-web-framework/swef-plugin-swefcms.git
 
+# Swef SwefMiner bundle
+# =====================
+# Bundle        Package                         Command
+# ------        -------                         -------
+  swefminer     swef-plugin-swefminer           git clone https://github.com/sane-web-framework/swef-plugin-swefminer.git
+
 # Custom bundle
 # =============
 # Bundle        Package                         Command

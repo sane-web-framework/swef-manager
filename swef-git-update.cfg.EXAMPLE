@@ -26,6 +26,12 @@
 # ------        -------                         -------
   swefcms       swef-plugin-swefcms             git pull origin master
 
+# Swef SwefMiner bundle
+# =====================
+# Bundle        Package                         Command
+# ------        -------                         -------
+  swefminer     swef-plugin-swefminer           git pull origin master                                                   
+
 # Custom bundle
 # =============
 # Bundle        Package                         Command
