@@ -111,18 +111,38 @@ function update_package_up {
         return
     fi
     cd "./$package"
+    #  1. Framework configuration
     for file in $(find ./app/config -iname *.EXAMPLE | grep -v /\.git | grep -v /\.swef)
     do
+        if [ ! -f "$file" ]
+        then
+            continue
+        fi
         if [ -f "$(pwd)/../$instanceDir/${file::-8}" ]
         then
             continue
         fi
         echo "Making $instanceDir/$(dirname "$file")"
         mkdir -p "$(pwd)/../$instanceDir/$(dirname "$file")"
-        echo "Instantiating $file into $instanceDir/.../$(basename "${file::-8}")"
+        echo "Instantiating $file into $instanceDir/${file::-8}"
         cp "$(pwd)/$file" "$(pwd)/../$instanceDir/${file::-8}"
-   done
-    cd ..
+    done
+    cd "./.swef"
+    #  2. OS configuration
+    for file in $(ls -1 *.EXAMPLE)
+    do
+        if [ ! -f "$file" ]
+        then
+            continue
+        fi
+        if [ -f "$(pwd)/../$instanceDir/.swef/${file::-8}" ]
+        then
+            continue
+        fi
+        echo "Instantiating $file as $instanceDir/.swef/${file::-8})"
+        cp "$(pwd)/$file" "$(pwd)/../$instanceDir/${file::-8}"
+    done
+    cd ../..
 }
 
 
