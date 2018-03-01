@@ -3,15 +3,6 @@
 # BUILD A SWEF WEB DIRECTORY OF SYMBOLIC LINKS TO DISPARATE SWEF PROJECTS
 
 
-function build_chmod {
-    for d in $(find . -type d | grep -v /\.swef | grep -v \/.git | grep -v ^\./app/log/)
-    do
-        chmod 750 "$d"
-    done
-}
-
-
-
 function build_error_msg {
     # Report an error message to both stdout and stderr
     echo "$1" | tee /dev/stderr
@@ -64,64 +55,29 @@ function build_find_paths {
 
 
 
-function build_ug {
-    if [ "$1" = "" ]
-    then
-        echo -n $USER:
-        ps ax o uid,user,group,comm | grep -v grep | grep -E 'apache|httpd|nginx' | grep -v '^\s*0\s' | head -n 1 | awk '{print $3;}'
-        return
-    fi
-    echo $1
+function build_ug_grp {
+    ps ax o uid,user,group,comm | grep -v grep | grep -E 'apache|httpd|nginx' | grep -v '^\s*0\s' | head -n 1 | awk '{print $3;}'
 }
 
 
 
-function build_ug_chmod {
+function build_ug_perms {
+    for d in $(find . -type d | grep -v /\.swef | grep -v \/.git | grep -v ^\./app/log/)
+    do
+        chmod 750 "$d"
+    done
+    echo "cd \"$(pwd)\"" >> "$tmpPerm"
     for d in ./app/log ./app/lookup ./app/phrases ./media/content
     do
+        echo "sudo chown -R $(build_ug_usr):$(build_ug_grp) $d/*" >> "$tmpPerm"
         chmod 770 "$d"
     done
-    for d in $(ls -1 -d ./media/content/*)
-    do
-        if [ -d "$d" ]
-        then
-            chmod 770 "$d"
-        fi
-    done
-}
-
-
-
-function build_ug_grp {
-    echo $2
-}
-
-
-
-function build_ug_seek {
-    ls -l . | awk '{print $3 ":" $4}' | grep "$1" | head -n 1
 }
 
 
 
 function build_ug_usr {
-    echo $1
-}
-
-
-
-function build_ug_suggest {
-    usr="$(build_ug_usr $(echo $1 | tr ":" "\n"))"
-    grp="$(build_ug_grp $(echo $1 | tr ":" "\n"))"
-    echo "# ----------------------------------------"
-    echo "# Give server write permissions like this:"
-    echo "usermod -a -G $grp $usr"
-    echo "cd \"$2\""
-    echo "chown -R $1 app/log"
-    echo "chown -R $1 app/lookup"
-    echo "chown -R $1 app/phrases"
-    echo "chown -R $1 media/content"
-    echo "# ----------------------------------------"
+    ps ax o uid,user,group,comm | grep -v grep | grep -E 'apache|httpd|nginx' | grep -v '^\s*0\s' | head -n 1 | awk '{print $2;}'
 }
 
 
@@ -153,6 +109,11 @@ mkdir "$targetDir"
 cd "$(dirname "$0")/.."
 umbrellaDir="$(pwd)"
 tmpFile="$umbrellaDir/.swef-build.tmp"
+echo -n "" > "$tmpFile"
+tmpPerm="$umbrellaDir/.swef-perm.tmp"
+echo "# Generate correct permissions like this:" > "$tmpPerm"
+echo "sudo usermod -a -G $(build_ug_grp) $USER" > "$tmpPerm"
+echo "sudo chown -R $USER:$(build_ug_grp) \"$umbrellaDir\"" >> "$tmpPerm"
 manifest="$targetDir/.swef-manifest"
 echo "# BUILD MANIFEST @ time=$(date '+%Y%m%d%H%M%S')" > "$manifest"
 echo "REBUILDING SYMLINKS IN $targetDir POINTING AT:"
@@ -223,15 +184,10 @@ do
         # Build directories and links
         cd "$umbrellaDir/$dir"
         pwd
-        build_chmod
         if [ "$projectType" = "instanceland" ]
         then
             instanceDir="$(pwd)"
-            build_ug_chmod
-            if [ ! "$(build_ug_seek $(build_ug "$1"))" ]
-            then
-                suggestUg=1
-            fi
+            build_ug_perms
         fi
         echo "--------"
         echo "# $umbrellaDir/$dir" >> "$manifest"
@@ -258,16 +214,9 @@ done
 
 
 # Complete manifest
-if [ "$instanceDir" ]
-then
-    cmds="$(build_ug_suggest $(build_ug "$1") "$instanceDir")"
-    echo "$cmds" >> "$manifest"
-    if [ "$suggestUg" ]
-    then
-        echo "$cmds"
-    fi
-fi
-
+cat "$tmpPerm" >> "$manifest"
+cat "$tmpPerm"
+rm "$tmpPerm"
 
 
 # Display the manifest and exit
