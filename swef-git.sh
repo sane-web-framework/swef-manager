@@ -90,7 +90,9 @@ do
         else
             echo "$dir - git status:"
             git status
+            sleep 1
         fi
+
     done
 
 done
