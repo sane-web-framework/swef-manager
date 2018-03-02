@@ -118,31 +118,35 @@ function update_package_up {
         then
             continue
         fi
-        if [ -f "$(pwd)/../$instanceDir/${file::-8}" ]
+        if [ -f "../$instanceDir/${file::-8}" ]
         then
             continue
         fi
         echo "Making $instanceDir/$(dirname "$file")"
-        mkdir -p "$(pwd)/../$instanceDir/$(dirname "$file")"
-        echo "Instantiating $file into $instanceDir/${file::-8}"
-        cp "$(pwd)/$file" "$(pwd)/../$instanceDir/${file::-8}"
+        mkdir -p "../$instanceDir/$(dirname "$file")"
+        echo "Instantiating $file"
+        echo "           as $instanceDir/${file::-8}"
+        cp "$file" "../$instanceDir/${file::-8}"
     done
     cd "./.swef"
     #  2. OS configuration
-    for file in $(ls -1 *.EXAMPLE)
+    for file in *.EXAMPLE
     do
         if [ ! -f "$file" ]
         then
             continue
         fi
-        if [ -f "$(pwd)/../$instanceDir/.swef/${file::-8}" ]
+        if [ -f "../../$instanceDir/.swef/${file::-8}" ]
         then
             continue
         fi
-        echo "Instantiating $file as $instanceDir/.swef/${file::-8})"
-        cp "$(pwd)/$file" "$(pwd)/../$instanceDir/${file::-8}"
+        echo "Making $instanceDir/.swef"
+        mkdir -p "../../$instanceDir/.swef"
+        echo "Instantiating $file"
+        echo "           as $instanceDir/.swef/${file::-8})"
+        cp "$file" "../../$instanceDir/.swef/${file::-8}"
     done
-    cd ../..
+    cd "../.."
 }
 
 
