@@ -121,8 +121,11 @@ echo "REBUILDING SYMLINKS IN $targetDir POINTING AT:"
 
 
 # Loop through project types
-for projectType in instanceland swefland vendorland userland
+for projectType in swefland vendorland userland instanceland
 do
+
+    # Web directory symbolic links are overwritten below so a
+    # file in a later loop "wins" the link from an earlier one
 
     # Loop through projects
     cd "$umbrellaDir"
@@ -131,12 +134,6 @@ do
 
         # Ignore paths that are not directories
         if [ ! -d "$umbrellaDir/$dir" ]
-        then
-             continue
-        fi
-
-        # Ignore project if current loop is instanceland and project is not
-        if [ "$projectType" = "instanceland" ] && [ ! -f  "$umbrellaDir/$dir/.swef-type-instance" ]
         then
              continue
         fi
@@ -168,6 +165,12 @@ do
             then
                 continue
             fi
+        fi
+
+        # Ignore project if current loop is instanceland and project is not
+        if [ "$projectType" = "instanceland" ] && [ ! -f  "$umbrellaDir/$dir/.swef-type-instance" ]
+        then
+             continue
         fi
 
         echo "--------"

@@ -1,0 +1,13 @@
+# Deployed by ./swef update (eventually)
+
+# Target package                Original file
+# --------------                -------------
+#   Fork files for customisation within a distributed project (file is now a project problem)
+#    my-project                  swef-vanilla/.htaccess
+#    my-project                  swef-vanilla/app/endpoint/www.home.php
+#    my-project                  swef-vanilla/app/class/Swef/Bespoke/Database.class.php
+#   Fork files for modification bespoke to this installation instance (file is now a sysadmin problem)
+#    swef-instance-myserver-me   my-project/.htaccess
+#    swef-instance-myserver-me   swef-vanilla/app/endpoint/api.php
+#    swef-instance-myserver-me   swef-plugin-swefcms/app/config/static/Swef/SwefCMS.defines.php
+
