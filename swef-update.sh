@@ -11,10 +11,10 @@ function update_exit {
     # Return user to original working directory and exit with status code
     if [ "$1" != "0" ]
     then
-        update_error_msg "Error $1"
+        update_error_msg $1
     fi
     cd "$returnDir"
-    exit "$1"
+    exit $1
 }
 returnDir="$(pwd)"
 

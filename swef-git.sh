@@ -14,10 +14,10 @@ function git_exit {
     # Return user to original working directory and exit with status code
     if [ "$1" != "0" ]
     then
-        git_error_msg "Error $1"
+        git_error_msg $1
     fi
     cd "$returnDir"
-    exit "$1"
+    exit $1
 }
 returnDir="$(pwd)"
 

@@ -47,5 +47,6 @@ fi
 
 shift
 "$prog" "$@"
+status=$?
 cd "$returnDir"
-
+exit $status

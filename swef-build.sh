@@ -14,10 +14,10 @@ function build_exit {
     # Return user to original working directory and exit with status code
     if [ "$1" != "0" ]
     then
-        echo "Error $1"
+        echo $1
     fi
     cd "$returnDir"
-    exit "$1"
+    exit $1
 }
 returnDir="$(pwd)"
 
