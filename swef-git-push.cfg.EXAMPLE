@@ -1,0 +1,68 @@
+
+# Swef standard bundle
+# ====================
+# Bundle        Package                         Command
+# ------        -------                         -------
+#  swef          swef-manager                    git add .
+#  swef          swef-manager                    git commit
+#  swef          swef-manager                    git push origin master
+#  swef          swef-core                       git add .
+#  swef          swef-core                       git commit
+#  swef          swef-core                       git push origin master
+#  swef          swef-vanilla                    git add .
+#  swef          swef-vanilla                    git commit
+#  swef          swef-vanilla                    git push origin master
+#  swef          swef-plugin-swefcontent         git add .
+#  swef          swef-plugin-swefcontent         git commit
+#  swef          swef-plugin-swefcontent         git push origin master
+#  swef          swef-plugin-sweferror           git add .
+#  swef          swef-plugin-sweferror           git commit
+#  swef          swef-plugin-sweferror           git push origin master
+#  swef          swef-plugin-sweflogin           git add .
+#  swef          swef-plugin-sweflogin           git commit
+#  swef          swef-plugin-sweflogin           git push origin master
+#  swef          swef-plugin-swefregistrar       git add .
+#  swef          swef-plugin-swefregistrar       git commit
+#  swef          swef-plugin-swefregistrar       git push origin master
+#  swef          swef-plugin-swefsecurity        git add .
+#  swef          swef-plugin-swefsecurity        git commit
+#  swef          swef-plugin-swefsecurity        git push origin master
+
+# SWEF extras bundle
+# ==================
+# Bundle        Package                         Command
+# ------        -------                         -------
+#  extras        swef-noodles                    git add .
+#  extras        swef-noodles                    git commit
+#  extras        swef-noodles                    git push origin master
+#  extras        egvendor-plugin-egplugin        git add .
+#  extras        egvendor-plugin-egplugin        git commit
+#  extras        egvendor-plugin-egplugin        git push origin master
+#  extras        cry-stall-my-tea                git add .
+#  extras        cry-stall-my-tea                git commit
+#  extras        cry-stall-my-tea                git push origin master
+
+# Swef SwefCMS bundle
+# ===================
+# Bundle        Package                         Command
+# ------        -------                         -------
+#  swefcms       swef-plugin-swefcms             git add .
+#  swefcms       swef-plugin-swefcms             git commit
+#  swefcms       swef-plugin-swefcms             git push origin master
+
+# Swef SwefMiner bundle
+# =====================
+# Bundle        Package                         Command
+# ------        -------                         -------
+#  swefminer     swef-plugin-swefminer           git add .
+#  swefminer     swef-plugin-swefminer           git commit
+#  swefminer     swef-plugin-swefminer           git push origin master
+
+# Custom bundle
+# =============
+# Bundle        Package                         Command
+# ------        -------                         -------
+#  mybundle      my-project                      git add .
+#  mybundle      my-project                      git commit
+#  mybundle      my-project                      git push origin master
+
