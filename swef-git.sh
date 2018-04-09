@@ -68,7 +68,8 @@ function git_push {
         if [ "$(echo $cmd | grep "commit$")" ]
         then
             defmsg="Swef multi-project update $(date +%Y/%m/%d-%H:%M:%S)"
-            read -p "Commit message $defmsg"  msg
+            echo -n "Commit message: $defmsg"
+            read msg
             $cmd -m "$defmsg $msg"
         else
             $cmd
